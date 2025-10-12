@@ -1,0 +1,17 @@
+#See https://github.com/swoole/docker-swoole/tree/master/examples
+services:
+  app:
+    container_name: swoole_server
+    image: phpswoole/swoole:php8.4
+    ports:
+      - "8003:8003"
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    environment:
+      AUTORELOAD_PROGRAMS: "swoole"
+      AUTORELOAD_ANY_FILES: 1
+      SWOOLE_SERVER_PORT: ${SWOOLE_SERVER_PORT}
+      SWOOLE_SERVER_HOST: ${SWOOLE_SERVER_HOST}
+
+    command: php ./src/server.php
