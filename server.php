@@ -5,8 +5,10 @@ use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Server;
 
-
-$server = new Server('0.0.0.0', 8003);
+$serverHost = $_SERVER['SWOOLE_SERVER_HOST'] ?: '0.0.0.0';
+$serverPort = (int)$_SERVER['SWOOLE_SERVER_PORT'] ?: 8003;
+print_r($_SERVER);
+$server = new Server($serverHost, $serverPort);
 echo "Run on PHP ".phpversion().PHP_EOL;
 
 echo  "Swoole remote address: ". $_SERVER['SWOOLE_SERVER_HOST']. ' swoole port: '. $_SERVER['SWOOLE_SERVER_PORT'].PHP_EOL;
@@ -16,7 +18,18 @@ $server->on('start', function (Server $server ) {
 });
 
 $server->on('request', function (Request $request, Response $response) {
-    $response->end("Response from Swoole server");
+    $params = [];
+    $user = 'anonymous';
+    if(isset($request->server['query_string'])) {
+        parse_str($request->server['query_string'], $params);
+    }
+
+    if (isset($params['name'])) {
+        $user = $params['name'];
+    }
+
+    $response->end("Hello, $user Response from Swoole server");
+
 });
 
 $server->start();

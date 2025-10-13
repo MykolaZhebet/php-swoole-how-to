@@ -6,12 +6,12 @@ services:
     ports:
       - "8003:8003"
     volumes:
-      - .:/var/www/html
-    working_dir: /var/www/html
+      - .:/var/www/
+#    working_dir: /var/www/
     environment:
       AUTORELOAD_PROGRAMS: "swoole"
-      AUTORELOAD_ANY_FILES: 1
+      AUTORELOAD_ANY_FILES: 0
       SWOOLE_SERVER_PORT: ${SWOOLE_SERVER_PORT}
       SWOOLE_SERVER_HOST: ${SWOOLE_SERVER_HOST}
-
-    command: php ./src/server.php
+      PHP_IDE_CONFIG: "serverName=application"
+      XDEBUG_CONFIG: "idekey=PHPSTORM remote_host=host.docker.internal remote_port=9000"
