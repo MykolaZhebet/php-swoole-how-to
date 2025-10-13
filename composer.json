@@ -1,5 +1,11 @@
 {
     "require-dev": {
         "openswoole/ide-helper": "^4.11"
+    },
+    "require": {
+        "league/plates": "^3.6",
+        "slim/slim": "^4.15",
+        "ilexn/swoole-convert-psr7": "^0.6.1",
+        "nyholm/psr7": "^1.8"
     }
 }

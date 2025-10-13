@@ -2,12 +2,13 @@
 services:
   app:
     container_name: swoole_server
-    image: phpswoole/swoole:php8.4
+    image: openswoole/swoole:25.2-php8.4
     ports:
       - "8003:8003"
     volumes:
       - .:/var/www/
 #    working_dir: /var/www/
+#    command: php /var/www/index.php
     environment:
       AUTORELOAD_PROGRAMS: "swoole"
       AUTORELOAD_ANY_FILES: 0

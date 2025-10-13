@@ -11,3 +11,9 @@ docker compose up
 docker-compose exec app env
 docker compose run --rm app php ./src/server.php
 ```
+
+Components:
+ - platesphp for templating html with dynamic data. See https://platesphp.com/
+ - slim microframework for routing, middleware, etc.
+ - ilexn/swoole-convert-psr7 to convert request/response to PSR7
+ - nyholm/psr7 as PSR7 implementation for slim 
