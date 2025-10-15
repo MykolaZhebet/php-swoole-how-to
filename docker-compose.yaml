@@ -2,17 +2,66 @@
 services:
   app:
     container_name: swoole_server
+    build:
+      context: ./
+      dockerfile: docker/swoole/Dockerfile
     image: openswoole/swoole:25.2-php8.4
     ports:
       - "8003:8003"
     volumes:
       - .:/var/www/
+    depends_on:
+      - db
+    networks:
+      - backend-network
 #    working_dir: /var/www/
 #    command: php /var/www/index.php
     environment:
       AUTORELOAD_PROGRAMS: "swoole"
-      AUTORELOAD_ANY_FILES: 0
+      AUTORELOAD_ANY_FILES: 1
       SWOOLE_SERVER_PORT: ${SWOOLE_SERVER_PORT}
       SWOOLE_SERVER_HOST: ${SWOOLE_SERVER_HOST}
       PHP_IDE_CONFIG: "serverName=application"
       XDEBUG_CONFIG: "idekey=PHPSTORM remote_host=host.docker.internal remote_port=9000"
+
+  db:
+    container_name: mysql
+    image: mysql:8.0
+    tty: true
+    ports:
+      - "${DB_PORT}:3306"
+    expose:
+      - "3306"
+    networks:
+      - backend-network
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+#      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
+    profiles:
+      - phpmyadmin
+    ports:
+      - "8080:80"
+    networks:
+      - backend-network
+    environment:
+      PMA_HOST: ${DB_HOST}
+      PMA_PORT: ${DB_PORT}
+      MYSQL_ROOT_PASSWORD: secret
+    depends_on:
+      - db
+
+volumes:
+  mysql_data:
+
+networks:
+  backend-network:
+    driver: bridge
