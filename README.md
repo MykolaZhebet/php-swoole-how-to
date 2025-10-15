@@ -27,6 +27,11 @@ Components:
  - ilexn/swoole-convert-psr7 to convert request/response to PSR7
  - nyholm/psr7 as PSR7 implementation for slim
  - blucas/phpdotenv for working with .env file and have environment variables autoloading
+ - ramsey/uuid for work with uuids
+ - psr/simle-cache interface(PSR-16) for caching
+ - nesbot/carbon - for work with dates
+ - monolog/monolog for logging
+ - php-di/php-di for DI container
 
 TODOS:
  - db managements(dbal query builder/migrations)

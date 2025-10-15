@@ -3,14 +3,18 @@ declare(strict_types=1);
 
 //use App\Controllers\HomeController;
 use App\Application\Middlewares\CheckUsersExistenceMiddleware;
+use App\Application\Middlewares\SessionMiddleware;
 use App\Controllers\HomeController;
 use Ilex\SwoolePsr7\SwooleResponseConverter;
 use Ilex\SwoolePsr7\SwooleServerRequestConverter;
 use League\Plates\Engine;
 
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Message\{RequestInterface, ResponseInterface};
 use Slim\App;
+use Slim\Routing\RouteCollectorProxy;
 use Swoole\Http\Server;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -27,20 +31,25 @@ $requestConverter = new SwooleServerRequestConverter(
     $psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory
 );
 
-$app = new App($psr17Factory);
-
+$app = new App($psr17Factory, new \DI\Container());
 $app->addRoutingMiddleware();
+$container = $app->getContainer();
+
+$container->set('logger', function () {
+    $logger = new Logger('slim-app');
+    $logger->pushhandler(new StreamHandler('php://stdout', Logger::DEBUG));
+    return $logger;
+});
+
+
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 //$app->setBasePath('/var/www');
 $app->get('/', HomeController::class . ':welcome');
-$app->get('/user/{id}', HomeController::class . ':showUser')->add(new CheckUsersExistenceMiddleware());
-//$app->get('/', function (RequestInterface $request, ResponseInterface $response, $args) {
-//    error_log('Init route from Slim!!');
-//    $templates = new Engine(__DIR__ . '/Views');
-//    $response->getBody()->write($templates->render('view1', ['testVar' => 'Hello World!']));
-//    return $response;
-//})->setName('root');
 
+$app->group('/users',function(RouteCollectorProxy $group) {
+    $group->get('', HomeController::class . ':showUsers');
+    $group->get('/{id:[0-9]+}', HomeController::class . ':showUser')->add(new CheckUsersExistenceMiddleware());
+})->add(new SessionMiddleware());
 
 
 // Or using BasePathMiddleware
