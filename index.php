@@ -24,7 +24,7 @@ $app->addRoutingMiddleware();
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 $app->get('/', function (RequestInterface $request, ResponseInterface $response, $args) {
     error_log('Init route from Slim!!');
-    $templates = new Engine(__DIR__ . '/views');
+    $templates = new Engine(__DIR__ . '/Views');
     $response->getBody()->write($templates->render('view1', ['testVar' => 'Hello World!']));
     return $response;
 })->setName('root');
@@ -39,7 +39,7 @@ $serverPort = (int)$_SERVER['SWOOLE_SERVER_PORT'] ?: 8003;
 
 $server = new Server($serverHost, $serverPort);
 $server->on('start', function (Server $server ) {
-    echo "Swoole http server is started at http://0.0.0.0:8003\n";
+    echo "swoole http server is started at http://0.0.0.0:8003\n";
 });
 
 $server->on('request', function (Request $request, Response $response) use ($app, $requestConverter){
