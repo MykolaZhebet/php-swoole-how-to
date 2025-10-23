@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 //use App\Controllers\HomeController;
+use App\Application\Middlewares\AuthorizationMiddleWare;
 use App\Application\Middlewares\CheckUsersExistenceMiddleware;
 use App\Application\Middlewares\SessionMiddleware;
 use App\Controllers\HomeController;
@@ -19,6 +20,7 @@ use Swoole\Http\Server;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 
+global $app;
 const ROOT_DIR = __DIR__;
 require __DIR__ . '/vendor/autoload.php';
 
@@ -44,11 +46,25 @@ $container->set('logger', function () {
 
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 //$app->setBasePath('/var/www');
-$app->get('/', HomeController::class . ':welcome');
 
-$app->group('/users',function(RouteCollectorProxy $group) {
-    $group->get('', HomeController::class . ':showUsers');
-    $group->get('/{id:[0-9]+}', HomeController::class . ':showUser')->add(new CheckUsersExistenceMiddleware());
+
+$app->group('',function(RouteCollectorProxy $group) {
+    $group->get('/', HomeController::class . ':welcome');
+    $group->get('/login', HomeController::class . ':login' )
+        ->setName('login')
+        ->add(new AuthorizationMiddleWare());
+    $group->post('/login', HomeController::class . ':loginHandler' )
+        ->setName('login-handler')
+        ->add(new AuthorizationMiddleWare());
+    $group->post('/logout', HomeController::class . ':logoutHandler' )
+        ->setName('logout-handler')
+        ->add(new AuthorizationMiddleWare());
+    $group->get('/admin', HomeController::class . ':logoutHandler' )
+        ->setName('admin')
+        ->add(new AuthorizationMiddleWare());
+
+    $group->get('/users', HomeController::class . ':showUsers');
+    $group->get('/users/{id:[0-9]+}', HomeController::class . ':showUser')->add(new CheckUsersExistenceMiddleware());
 })->add(new SessionMiddleware());
 
 
