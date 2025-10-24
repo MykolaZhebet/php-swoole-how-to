@@ -1,0 +1,18 @@
+POST http://localhost:8003/login
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryagNmkuvZgAhgfQEg
+
+------WebKitFormBoundaryagNmkuvZgAhgfQEg
+Content-Disposition: form-data; name="email"
+
+test@testdomain.com
+------WebKitFormBoundaryagNmkuvZgAhgfQEg
+Content-Disposition: form-data; name="password"
+
+test
+------WebKitFormBoundaryagNmkuvZgAhgfQEg
+Content-Disposition: form-data; name="submit"
+
+Submit
+------WebKitFormBoundaryagNmkuvZgAhgfQEg--
+
+

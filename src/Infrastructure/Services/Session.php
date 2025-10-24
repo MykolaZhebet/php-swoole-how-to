@@ -36,6 +36,9 @@ class Session {
         );
     }
 
+    /**
+     * @return qrray {'id': string }
+     */
     private static function getCurrentSession(Request $request): array
     {
         $session_table = SessionTable::getInstance();
