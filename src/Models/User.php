@@ -28,16 +28,15 @@ class User {
 
     public function get($field, $value) {
         $sql = <<<SQL
-            SELECT * FROM users WHERE $field = :value;
+            SELECT * FROM users WHERE $field = :$field;
         SQL;
-
         return DbAdapter::fetchAll($sql, [':' . $field => $value]);
     }
 
     public function insert(array $data) {
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         $sql = <<<SQL
-            INSERT INTO users (name, email, password) VALUES (:name, :email, :password);
+            INSERT INTO users (name, email, password) VALUES (:name, :email, :password)
         SQL;
         return DbAdapter::execute($sql, $data);
     }
