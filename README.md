@@ -32,6 +32,8 @@ Components:
  - nesbot/carbon - for work with dates
  - monolog/monolog for logging
  - php-di/php-di for DI container
+ - illuminate/database Eloquent ORM(Laravel) for database
+ - symfony/console for console commands
 
 TODOS:
  - db managements(dbal query builder/migrations)

@@ -14,7 +14,9 @@
         "php-di/slim-bridge": "^3.4",
         "php-di/php-di": "^7.1",
         "psr/simple-cache": "^3.0",
-        "webonyx/graphql-php": "^15.25"
+        "webonyx/graphql-php": "^15.25",
+        "illuminate/database": "^12.35",
+        "symfony/console": "^7.3"
     },
     "autoload": {
         "psr-4": {

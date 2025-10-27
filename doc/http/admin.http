@@ -1,0 +1,5 @@
+GET http://localhost:8003/admin
+Cache-control: no-cache
+Connection: keep-alive
+Cookie: my-code-session=sdf3rfsdfyksdeyJpZCI6ImFhNTI0NDg4LTIzNTQtNDY5YS1hYTIxLTA2MmRlMDViN2U4ZiJ9
+
