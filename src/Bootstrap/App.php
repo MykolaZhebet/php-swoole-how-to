@@ -3,6 +3,8 @@ namespace App\Bootstrap;
 
 use App\Infrastructure\Migration;
 use App\Infrastructure\Seed;
+use App\Models\User;
+use App\Services\Event;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Ilex\SwoolePsr7\SwooleServerRequestConverter;
 use Slim\App as SlimApp;
@@ -17,7 +19,11 @@ class App  {
     public static function start(): void {
         [$app, $requestConverter] = App::prepareSlimApp();
 
+        include_once ROOT_DIR . '/src/constants.php';
+
         Dependencies::start($app);
+
+        self::registerEvents($app);
 
         (require ROOT_DIR . '/src/routes.php')($app);
 
@@ -33,7 +39,7 @@ class App  {
      * @return array{ 0: SlimApp, 1: SwooleServerRequestConverter }
      */
     private static function prepareSlimApp(): array {
-
+        global $app;
         $psr17Factory = new Psr17Factory();
 
         $requestConverter = new SwooleServerRequestConverter(
@@ -93,5 +99,19 @@ class App  {
             $output->writeln('');
             exit(1);
         }
+    }
+
+    private static function registerEvents(SlimApp $app): void {
+        $container = $app->getContainer();
+        (Event::getInstance())->addEvent(LOGIN_EVENT, function(string $data) use ($container) {
+            $logger = $container->get('logger');
+            if (!json_validate($data)) {
+                $logger->error('Invalid JSON data');
+            }
+            $parsedData = json_decode($data, true);
+            $user = User::find((int)$parsedData['user_id']);
+            $logger->info('User ' . $user->name . ' logged in');
+        });
+
     }
 }

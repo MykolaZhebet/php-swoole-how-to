@@ -1,12 +1,16 @@
 <?php
 namespace App\Bootstrap;
 
+use App\Services\Event;
 use Swoole\Http\Server;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Ilex\SwoolePsr7\SwooleResponseConverter;
 use Slim\App;
 use Ilex\SwoolePsr7\SwooleServerRequestConverter;
+use Swoole\Table;
+use Swoole\Timer;
+
 class SwooleServer {
     public static function start(App $app, SwooleServerRequestConverter $requestConverter): void {
         $serverHost = $_SERVER['SWOOLE_SERVER_HOST'] ?: '0.0.0.0';
@@ -24,6 +28,35 @@ class SwooleServer {
             $converter->send($psr7Response);
         });
 
+        self::eventsHandle($app);
+
+
         $server->start();
+    }
+
+    protected static function eventsHandle(App $app): void {
+        $table = new Table(1024);
+        $table->column('eventName', Table::TYPE_STRING, 40);
+        $table->column('eventData', Table::TYPE_STRING, 250);
+        $table->create();
+        $app->getContainer()->set('eventTable', $table);
+
+        Timer::tick(1000, function () use ($table, $app) {
+            $eventList = (Event::getInstance())->getEvents();
+            /** @var \Monolog\Logger $logger */
+            $logger = $app->getContainer()->get('logger');
+            $logger->info('Processing events ('.count($table).')');
+            error_log(print_r(array_keys($eventList), true));
+            foreach($table AS $key => $event) {
+                if (!isset($eventList[$event['eventName']])) {
+                    $logger->warning('Event ' . $event['eventName'] . ' not registered');
+                    continue;
+                }
+                foreach($eventList[$event['eventName']] as $handler) {
+                    $handler($event['eventData']);
+                }
+                $table->del($key);
+            }
+        });
     }
 }

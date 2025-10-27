@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Infrastructure\Services\SessionTable;
 use App\Models\User;
+use App\Services\Event;
 use League\Plates\Engine;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -34,6 +35,8 @@ class LoginController {
             'id' => $request->session['id'],
             'user_id' => $user->id,
         ]);
+
+        Event::dispatch(LOGIN_EVENT, json_encode(['user_id' => $user->id]));
 
         return $response
             ->withHeader('Location', '/admin')
