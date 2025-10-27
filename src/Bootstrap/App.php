@@ -1,6 +1,8 @@
 <?php
 namespace App\Bootstrap;
 
+use App\Infrastructure\Migration;
+use App\Infrastructure\Seed;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Ilex\SwoolePsr7\SwooleServerRequestConverter;
 use Slim\App as SlimApp;
@@ -51,12 +53,12 @@ class App  {
         switch($input->getArgument('action')) {
             case 'migrate':
                 $output->writeln('Migration started');
-//                Migration::handle($app, $input );
+                Migration::handle($app, $input );
                 return true;
             break;
             case 'seed':
                 $output->writeln('Seeding started');
-//                Seed:handle($app);
+                Seed::handle($app);
                 return true;
             default:
                 return false;

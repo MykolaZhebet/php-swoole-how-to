@@ -11,10 +11,10 @@ class AdminController {
     public function admin(RequestInterface $request, ResponseInterface $response, $args) {
         $sessionTable = SessionTable::getInstance();
         $sessionData = $sessionTable->get($request->session['id']);
-        $user = current((new User)->find($sessionData['user_id']));
+        $user = User::find($sessionData['user_id']);
 
         $templates = new Engine(ROOT_DIR . '/src/Views');
-        $response->getBody()->write($templates->render('admin', ['userName' => $user['name']]));
+        $response->getBody()->write($templates->render('admin', ['userName' => $user->name]));
         return $response;
     }
 }

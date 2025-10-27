@@ -3,8 +3,17 @@
 namespace App\Models;
 
 use App\Infrastructure\DbAdapter;
+use Illuminate\Database\Eloquent\Model;
 
-class User {
+class User extends Model {
+    protected $connection = 'default';
+    protected $table = 'users';
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+
     public function createTable() {
         $sql = <<<SQL
             CREATE TABLE users (
@@ -19,7 +28,7 @@ class User {
         return DbAdapter::execute($sql);
     }
 
-    public function find(int $id) {
+    public function findOld(int $id) {
         $sql = <<<SQL
             SELECT * FROM users WHERE id = :id;
         SQL;

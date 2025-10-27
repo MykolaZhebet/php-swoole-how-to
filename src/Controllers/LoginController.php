@@ -20,9 +20,9 @@ class LoginController {
 
         $data = $request->getParsedBody();
         //Todo: validation
-        $user = current((new User)->get('email', $data['email']));
+        $user = User::where('email', $data['email'])->first();
         //Todo: verify if the user was found
-        if (!password_verify($data['password'], $user['password'])) {
+        if (!password_verify($data['password'], $user->password)) {
             $app->getContainer()->get('logger')->info('Wrong password!');
             return $response
                 ->withHeader('Location', '/login?error=Failed to authenticate')
@@ -32,7 +32,7 @@ class LoginController {
         $sessionTable = SessionTable::getInstance();
         $sessionTable->set($request->session['id'], [
             'id' => $request->session['id'],
-            'user_id' => $user['id'],
+            'user_id' => $user->id,
         ]);
 
         return $response

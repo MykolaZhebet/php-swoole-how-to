@@ -25,8 +25,5 @@ return function (App $app) {
         $group->get('/admin', AdminController::class . ':admin' )
             ->setName('admin')
             ->add(new AuthorizationMiddleWare());
-
-        $group->get('/users', HomeController::class . ':showUsers');
-        $group->get('/users/{id:[0-9]+}', HomeController::class . ':showUser')->add(new CheckUsersExistenceMiddleware());
     })->add(new SessionMiddleware());
 };

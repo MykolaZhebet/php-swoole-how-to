@@ -10,7 +10,9 @@ Run commands:
 docker compose up
 #test env. variables
 docker-compose exec app env
-docker compose run --rm app php ./src/server.php
+docker compose run --rm app php ./server.php
+#run command:
+docker-compose exec app php ./server.php migrate 
 ```
 DB:
 ```
