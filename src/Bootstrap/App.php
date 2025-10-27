@@ -1,6 +1,8 @@
 <?php
 namespace App\Bootstrap;
 
+use App\Events\EventInterface;
+use App\Events\EventLogin;
 use App\Infrastructure\Migration;
 use App\Infrastructure\Seed;
 use App\Models\User;
@@ -103,14 +105,13 @@ class App  {
 
     private static function registerEvents(SlimApp $app): void {
         $container = $app->getContainer();
-        (Event::getInstance())->addEvent(LOGIN_EVENT, function(string $data) use ($container) {
+//        (Event::getInstance())->addListener(LOGIN_EVENT, function(string $data) use ($container) {
+
+        (Event::getInstance())->addListener(EventLogin::class, function(EventInterface $event) use ($container) {
             $logger = $container->get('logger');
-            if (!json_validate($data)) {
-                $logger->error('Invalid JSON data');
-            }
-            $parsedData = json_decode($data, true);
-            $user = User::find((int)$parsedData['user_id']);
-            $logger->info('User ' . $user->name . ' logged in');
+            /** @var EventLogin $event */
+//            $user = User::find((int)$parsedData['user_id']);
+            $logger->info('User ' . $event->user->name . ' logged in');
         });
 
     }

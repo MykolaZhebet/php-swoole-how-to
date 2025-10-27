@@ -42,7 +42,7 @@ class SwooleServer {
         $app->getContainer()->set('eventTable', $table);
 
         Timer::tick(1000, function () use ($table, $app) {
-            $eventList = (Event::getInstance())->getEvents();
+            $eventList = (Event::getInstance())->getListeners();
             /** @var \Monolog\Logger $logger */
             $logger = $app->getContainer()->get('logger');
             $logger->info('Processing events ('.count($table).')');

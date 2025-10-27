@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
 
+use App\Events\EventLogin;
 use App\Infrastructure\Services\SessionTable;
 use App\Models\User;
 use App\Services\Event;
@@ -36,8 +37,7 @@ class LoginController {
             'user_id' => $user->id,
         ]);
 
-        Event::dispatch(LOGIN_EVENT, json_encode(['user_id' => $user->id]));
-
+        Event::dispatch(new EventLogin($user));
         return $response
             ->withHeader('Location', '/admin')
             ->withStatus(302);
