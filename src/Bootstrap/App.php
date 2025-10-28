@@ -61,9 +61,14 @@ class App  {
         $application = new Application();
         $httpServerCommand = new HttpServerCommand();
         $application->add($httpServerCommand);
-//        $application->setDefaultCommand($httpServerCommand->getName(), true);
+
         $application->add(new GenerateJwtToken());
         $application->add(new MigrateCommand());
+
+        if (!isset($_SERVER['argv'][1])) {
+            $application->setDefaultCommand($httpServerCommand->getName(), true);
+        }
+
         $application->run();
     }
     
