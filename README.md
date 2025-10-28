@@ -12,7 +12,9 @@ docker compose up
 docker-compose exec app env
 docker compose run --rm app php ./server.php
 #run command:
-docker-compose exec app php ./server.php migrate 
+docker-compose exec app php ./server.php migrate
+#test
+docker-compose exec app  ./vendor/bin/phpunit 
 ```
 DB:
 ```

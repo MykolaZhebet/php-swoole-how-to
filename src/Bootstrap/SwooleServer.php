@@ -13,12 +13,13 @@ use Swoole\Timer;
 
 class SwooleServer {
     public static function start(App $app, SwooleServerRequestConverter $requestConverter): void {
-        $serverHost = $_SERVER['SWOOLE_SERVER_HOST'] ?: '0.0.0.0';
+        $serverHost = (string)$_SERVER['SWOOLE_SERVER_HOST'] ?: '0.0.0.0';
         $serverPort = (int)$_SERVER['SWOOLE_SERVER_PORT'] ?: 8003;
+        $serverProtocol = (string)$_SERVER['SWOOLE_SERVER_PROTOCOL'] ?: 'http';
 
         $server = new Server($serverHost, $serverPort);
-        $server->on('start', function (Server $server) use ($serverHost, $serverPort) {
-            echo sprintf("swoole http server is started at http://%s:%d", $serverHost, $serverPort).PHP_EOL;
+        $server->on('start', function (Server $server) use ($serverProtocol, $serverHost, $serverPort) {
+            echo sprintf("swoole http server is started at %s://%s:%d", $serverProtocol, $serverHost, $serverPort).PHP_EOL;
         });
 
         $server->on('request', function (Request $request, Response $response) use ($app, $requestConverter) {
