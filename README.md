@@ -15,6 +15,8 @@ docker compose run --rm app php ./server.php
 docker-compose exec app php ./server.php migration:migrate
 #test
 docker-compose exec app  ./vendor/bin/phpunit 
+#concrete test
+docker-compose exec app  ./vendor/bin/phpunit ./tests/Unit/GenerateTokenCommandTest.php
 ```
 DB:
 ```
@@ -39,6 +41,7 @@ Components:
  - illuminate/database Eloquent ORM(Laravel) for database
  - symfony/console for console commands
  - firebase/php-jwt for work with JWT tokens
+ - syfmony/validator for validation input data
 
 TODOS:
  - db managements(dbal query builder/migrations)
