@@ -10,8 +10,8 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Migration
 {
-    public static function handle(App $app, InputInterface $input): void {
-        self::migrateUsers($app, $input->getOption('fresh'));
+    public static function handle(App $app, bool $isFresh): void {
+        self::migrateUsers($app, $isFresh);
     }
 
     private static function migrateUsers(App $app, bool $fresh = false): void {

@@ -45,8 +45,7 @@ class SwooleServer {
             $eventList = (Event::getInstance())->getListeners();
             /** @var \Monolog\Logger $logger */
             $logger = $app->getContainer()->get('logger');
-            $logger->info('Processing events ('.count($table).')');
-            error_log(print_r(array_keys($eventList), true));
+//            $logger->info('Processing events ('.count($table).')');
             foreach($table AS $key => $event) {
                 if (!isset($eventList[$event['eventName']])) {
                     $logger->warning('Event ' . $event['eventName'] . ' not registered');

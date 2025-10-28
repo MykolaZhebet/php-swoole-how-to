@@ -10,6 +10,7 @@ use App\Services\Event;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Ilex\SwoolePsr7\SwooleServerRequestConverter;
 use Slim\App as SlimApp;
+use Slim\Routing\RouteCollectorProxy;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -27,7 +28,7 @@ class App  {
 
         self::registerEvents($app);
 
-        (require ROOT_DIR . '/src/routes.php')($app);
+        self::registerRoutes($app);
 
         if(self::processCommands($app)) {
             echo 'Command executed successfully'. PHP_EOL;
@@ -61,7 +62,7 @@ class App  {
         switch($input->getArgument('action')) {
             case 'migrate':
                 $output->writeln('Migration started');
-                Migration::handle($app, $input );
+                Migration::handle($app, $input->getOption('fresh'));
                 return true;
             break;
             case 'seed':
@@ -113,6 +114,13 @@ class App  {
 //            $user = User::find((int)$parsedData['user_id']);
             $logger->info('User ' . $event->user->name . ' logged in');
         });
+    }
 
+    public static function registerRoutes(SlimApp $app): void {
+        (require ROOT_DIR . '/src/routes.php')($app);
+
+        $app->group('/api', function (RouteCollectorProxy $group) {
+            (require ROOT_DIR . '/src/api-routes.php')($group);
+        });
     }
 }
