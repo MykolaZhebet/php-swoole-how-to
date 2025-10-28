@@ -14,6 +14,10 @@ class User extends Model {
         'password',
     ];
 
+    public function tokens() {
+        return $this->hasMany(Token::class, 'user_id');
+    }
+
     public function createTable() {
         $sql = <<<SQL
             CREATE TABLE users (

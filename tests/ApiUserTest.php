@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Models\User;
 use Nekofar\Slim\Test\Traits\AppTestTrait;
 
 class ApiUserTest extends TestCase
@@ -13,7 +14,11 @@ class ApiUserTest extends TestCase
     }
 
     public function test_can_get_users(): void {
-        $response = $this->get('/api/users');
+        $user = User::find(1);
+        $token = $user->tokens->first()->token;
+        $response = $this
+            ->withHeader('Authorization', 'Bearer ' . $token)
+            ->get('/api/users');
         $response->assertOk();
 
         $bodyStream = $response->getBody();
@@ -26,5 +31,7 @@ class ApiUserTest extends TestCase
         $this->AssertArrayHasKey('name', $firstUser);
         $this->AssertArrayHasKey('email', $firstUser);
     }
+
+
 
 }

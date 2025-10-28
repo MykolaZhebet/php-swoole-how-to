@@ -1,7 +1,9 @@
 <?php
 namespace App\Bootstrap;
 
+use App\Commands\GenerateJwtToken;
 use App\Commands\HttpServerCommand;
+use App\Commands\MigrateCommand;
 use App\Events\EventInterface;
 use App\Events\EventLogin;
 use App\Infrastructure\Migration;
@@ -57,7 +59,11 @@ class App  {
 
     private static function processCommands(SlimApp $app): void {
         $application = new Application();
-        $application->add(new HttpServerCommand());
+        $httpServerCommand = new HttpServerCommand();
+        $application->add($httpServerCommand);
+        $application->setDefaultCommand($httpServerCommand->getName(), true);
+        $application->add(new GenerateJwtToken());
+        $application->add(new MigrateCommand());
         $application->run();
     }
     

@@ -1,1 +1,2 @@
 GET http://localhost:8003/api/users
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NjE2NTM5NjEsInVzZXJfaWQiOjF9.kxExqJ2twqH5sX4xjmXMST75BHe91aZKt9Wk4Lt0jkg

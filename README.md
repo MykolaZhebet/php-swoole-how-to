@@ -11,8 +11,8 @@ docker compose up
 #test env. variables
 docker-compose exec app env
 docker compose run --rm app php ./server.php
-#run command:
-docker-compose exec app php ./server.php migrate
+#Migration
+docker-compose exec app php ./server.php migration:migrate
 #test
 docker-compose exec app  ./vendor/bin/phpunit 
 ```
@@ -38,6 +38,7 @@ Components:
  - php-di/php-di for DI container
  - illuminate/database Eloquent ORM(Laravel) for database
  - symfony/console for console commands
+ - firebase/php-jwt for work with JWT tokens
 
 TODOS:
  - db managements(dbal query builder/migrations)

@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure;
 
+use App\Models\Token;
 use App\Models\User;
 use Illuminate\Database\Schema\Blueprint;
 use Slim\App;
@@ -12,6 +13,7 @@ class Migration
 {
     public static function handle(App $app, bool $isFresh): void {
         self::migrateUsers($app, $isFresh);
+        self::migrateTokens($app, $isFresh);
     }
 
     private static function migrateUsers(App $app, bool $fresh = false): void {
@@ -37,5 +39,31 @@ class Migration
             $table->timestamps();
         });
         $output->writeln('Users table created');
+    }
+
+    private static function migrateTokens(App $app, bool $fresh = false): void {
+        $output = new ConsoleOutput();
+        $token = new Token();
+        $db = $app->getContainer()->get('db')->schema();
+        if ($db->hasTable($token->getTable())) {
+            $output->writeln('Tokens table already exists');
+            if ($fresh) {
+                $output->writeln('Dropping tokens table(fresh flag)');
+                $db->drop($token->getTable());
+            } else {
+                return;
+            }
+
+        }
+
+        $db->create($token->getTable(), function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name', 40);
+            $table->foreignId('user_id');
+            $table->dateTime('expire_at')->nullable();
+            $table->string('token', 150);
+            $table->timestamps();
+        });
+        $output->writeln('Tokens table created');
     }
 }
