@@ -1,13 +1,18 @@
 <?php
 namespace App\Controllers;
 
+use App\Application\Rules\RecordExist;
 use App\Events\EventLogin;
 use App\Infrastructure\Services\SessionTable;
 use App\Models\User;
 use App\Services\Event;
+use App\Services\Validator;
 use League\Plates\Engine;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 
 class LoginController {
 
@@ -21,7 +26,17 @@ class LoginController {
         global $app;
 
         $data = $request->getParsedBody();
-        //Todo: validation
+        unset($data['submit']);
+        try {
+            /** @throws \Exception */
+            $this->validateLoginForm($data);
+        } catch (\Exception $e) {
+            return $response
+                ->withHeader('Location', 'login?error=Authentication error '. $e->getMessage())
+                ->withStatus(302);
+        }
+
+
         $user = User::where('email', $data['email'])->first();
         //Todo: verify if the user was found
         if (!password_verify($data['password'], $user->password)) {
@@ -53,5 +68,24 @@ class LoginController {
         return $response
             ->withHeader('Location', '/login')
             ->withStatus(302);
+    }
+
+    private function validateLoginForm(array $data): void {
+        /** @throws \Exception */
+        Validator::validate($data, [
+            'email' => [
+                new NotBlank(null, 'Email is required'),
+                new Type('string', 'Email must be a string'),
+                new Email(null, 'Email must be a valid email'),
+                new RecordExist([
+                    'model' => User::class,
+                    'field' => 'email',
+                ], 'Email doesn\'t exist')
+            ],
+            'password' => [
+                new NotBlank(null, 'Password is required'),
+                new Type('string', 'Password must be a string'),
+            ]
+        ]);
     }
 }

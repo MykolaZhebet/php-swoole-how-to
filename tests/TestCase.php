@@ -6,12 +6,15 @@ use App\Commands\GenerateJwtToken;
 use App\Commands\MigrateCommand;
 use App\Infrastructure\Migration;
 use App\Infrastructure\Seed;
+use App\Infrastructure\Services\Session;
+use App\Infrastructure\Services\SessionTable;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use \PHPUnit\Framework\TestCase as BaseTestCase;
 use Slim\App;
 use App\Bootstrap\App as AppBootstrap;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use Nekofar\Slim\Test\TestResponse;
 
 class TestCase extends BaseTestCase
 {
@@ -44,6 +47,22 @@ class TestCase extends BaseTestCase
         $tester = new CommandTester($command);
         $tester->execute($args);
         return $tester;
+    }
+
+    public function getSessionCookieFromResponse(TestResponse $response): array {
+        $cookie = current($response->getHeader('Set-Cookie'));
+        parse_str($cookie, $parsedCookie);
+        $parsedCookie = current(explode(';', current($parsedCookie)));
+        $parsedCookie = Session::parseCookie($parsedCookie);
+        return SessionTable::getInstance()->get($parsedCookie['id']);
+    }
+
+    public function getCookieParams(TestResponse $response): array {
+        $parsedCookie = explode('=', current($response->getHeader('Set-Cookie')));
+        $cookieKey = $parsedCookie[0];
+        unset($parsedCookie[0]);
+        $cookie = current(explode(';', $parsedCookie[1]));
+        return [$cookieKey => $cookie];
     }
 
 }
