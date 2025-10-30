@@ -42,6 +42,8 @@ Components:
  - symfony/console for console commands
  - firebase/php-jwt for work with JWT tokens
  - syfmony/validator for validation input data
+ - league/lysystem for work with filesystem
+ - mustache/mustache for templating files
 
 TODOS:
  - db managements(dbal query builder/migrations)

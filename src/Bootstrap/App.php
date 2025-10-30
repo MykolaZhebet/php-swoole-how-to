@@ -1,6 +1,7 @@
 <?php
 namespace App\Bootstrap;
 
+use App\Commands\GenerateFactoryCommand;
 use App\Commands\GenerateJwtToken;
 use App\Commands\HttpServerCommand;
 use App\Commands\MigrateCommand;
@@ -64,6 +65,7 @@ class App  {
 
         $application->add(new GenerateJwtToken());
         $application->add(new MigrateCommand());
+        $application->add(new GenerateFactoryCommand());
 
         if (!isset($_SERVER['argv'][1])) {
             $application->setDefaultCommand($httpServerCommand->getName(), true);

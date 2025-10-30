@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Models;
+use App\Infrastructure\DbAdapter;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+
+class {{model}}Factory extends Factory
+{
+    protected $model = {{model}}::class;
+
+    public function definition()
+    {
+        return [];
+    }
+}

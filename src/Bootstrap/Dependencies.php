@@ -2,6 +2,8 @@
 namespace App\Bootstrap;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
+use League\Flysystem\Filesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use Slim\App;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -9,6 +11,7 @@ class Dependencies {
     public static function start(App $app): void {
         self::registerLogger($app);
         self::registerDBCapsule($app);
+        self::registerFileSystem($app);
     }
 
     private static function registerLogger(App $app): void {
@@ -39,5 +42,12 @@ class Dependencies {
         });
         //Start db connection
         $container->get('db');
+    }
+
+    private static function registerFileSystem(App $app) {
+        $app->getContainer()->set('filesystem', function () {
+            $adapter = new LocalFilesystemAdapter(ROOT_DIR);
+            return new Filesystem($adapter);
+        });
     }
 }

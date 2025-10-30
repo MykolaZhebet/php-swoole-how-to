@@ -2,12 +2,15 @@
 
 namespace Tests;
 use App\Bootstrap\Dependencies;
+use App\Commands\GenerateFactoryCommand;
 use App\Commands\GenerateJwtToken;
 use App\Commands\MigrateCommand;
 use App\Infrastructure\Migration;
 use App\Infrastructure\Seed;
 use App\Infrastructure\Services\Session;
 use App\Infrastructure\Services\SessionTable;
+use League\Flysystem\Filesystem;
+use Mockery;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use \PHPUnit\Framework\TestCase as BaseTestCase;
 use Slim\App;
@@ -39,6 +42,7 @@ class TestCase extends BaseTestCase
         $application = new Application();
         $application->add(new MigrateCommand());
         $application->add(new GenerateJwtToken());
+        $application->add(new GenerateFactoryCommand());
     }
 
     public function runCommand(string $commandName, $args = []): CommandTester {
@@ -65,4 +69,12 @@ class TestCase extends BaseTestCase
         return [$cookieKey => $cookie];
     }
 
+    public function mockFileSystem(): void {
+        global $app;
+
+        $container = $app->getContainer();
+        $container->set('filesystem', function() {
+            return Mockery::mock(Filesystem::class);
+        });
+    }
 }
