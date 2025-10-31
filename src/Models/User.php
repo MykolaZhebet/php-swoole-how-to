@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use App\Infrastructure\DbAdapter;
+use App\Models\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Model {
+    use HasFactory;
     protected $connection = 'default';
     protected $table = 'users';
     protected $fillable = [
@@ -13,6 +16,10 @@ class User extends Model {
         'email',
         'password',
     ];
+
+    protected static function newFactory() {
+        return new UserFactory();
+    }
 
     public function tokens() {
         return $this->hasMany(Token::class, 'user_id');

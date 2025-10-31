@@ -44,6 +44,8 @@ Components:
  - syfmony/validator for validation input data
  - league/lysystem for work with filesystem
  - mustache/mustache for templating files
+ - fakerphp/faker for generating dummy data
+ - symfony/password-hasher for password hashing
 
 TODOS:
  - db managements(dbal query builder/migrations)

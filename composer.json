@@ -4,7 +4,8 @@
         "nekofar/slim-test": "^1.0",
         "phpunit/phpunit": "^9.6",
         "codedungeon/phpunit-result-printer": "^0.1.0",
-        "mockery/mockery": "^1.6"
+        "mockery/mockery": "^1.6",
+        "fakerphp/faker": "^1.24"
     },
     "require": {
         "league/plates": "^3.6",
@@ -24,7 +25,8 @@
         "firebase/php-jwt": "^6.11",
         "symfony/validator": "^7.3",
         "league/flysystem": "^3.30",
-        "mustache/mustache": "^3.0"
+        "mustache/mustache": "^3.0",
+        "symfony/password-hasher": "^7.3"
     },
     "autoload": {
         "psr-4": {
