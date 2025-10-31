@@ -47,6 +47,13 @@ Components:
  - fakerphp/faker for generating dummy data
  - symfony/password-hasher for password hashing
 
+
+##Troubleshoot WS:
+```
+sudo lsof -i :8004
+sudo netstat -tlnp | grep 8004
+wscat -c ws://localhost:8004
+```
 TODOS:
  - db managements(dbal query builder/migrations)
  - console commands(symfony console?)

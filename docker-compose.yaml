@@ -8,6 +8,7 @@ services:
     image: openswoole/swoole:25.2-php8.4
     ports:
       - "8003:8003"
+      - "8004:8004"
     volumes:
       - .:/var/www/
     depends_on:

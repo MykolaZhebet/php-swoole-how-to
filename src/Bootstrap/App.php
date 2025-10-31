@@ -5,6 +5,7 @@ use App\Commands\GenerateFactoryCommand;
 use App\Commands\GenerateJwtToken;
 use App\Commands\HttpServerCommand;
 use App\Commands\MigrateCommand;
+use App\Commands\WSServerCommand;
 use App\Events\EventInterface;
 use App\Events\EventLogin;
 use App\Infrastructure\Migration;
@@ -63,6 +64,7 @@ class App  {
         $httpServerCommand = new HttpServerCommand();
         $application->add($httpServerCommand);
 
+        $application->add(new WSServerCommand());
         $application->add(new GenerateJwtToken());
         $application->add(new MigrateCommand());
         $application->add(new GenerateFactoryCommand());
