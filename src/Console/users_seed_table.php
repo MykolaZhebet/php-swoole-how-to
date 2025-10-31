@@ -9,12 +9,27 @@ use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
 
+$users = [];
+//$user = User::create();
 $user = new User();
-$result = $user->insert(
+$users[] = $user->insert(
     [
         'name' => 'John',
         'email' => 'test@testdomain.com',
         'password' => 'test'
     ]
 );
-echo "Data inserted".PHP_EOL;
+$user = new User();
+$users[] = $user->insert(
+    [
+        'name' => 'Mike1',
+        'email' => 'test1@testdomain.com',
+        'password' => 'test'
+    ]
+);
+if (count($users) !== count(array_filter($users))) {
+    echo "Failed to insert data".PHP_EOL;
+} else {
+    echo "Data inserted".PHP_EOL;
+
+}

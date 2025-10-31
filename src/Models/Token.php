@@ -15,6 +15,19 @@ class Token extends Model
         'name',
         'user_id',
         'expire_at',
-        'token'
+        'token',
+        'uses',
+        'use_limit'
     ];
+
+    public function consume(): self {
+        if($this->use_limit !== 0 && $this->uses >= $this->use_limit) {
+            $this->delete();
+            throw new \Exception('Token has been used up');
+        }
+
+        $this->uses += 1;
+        $this->save();
+        return $this;
+    }
 }

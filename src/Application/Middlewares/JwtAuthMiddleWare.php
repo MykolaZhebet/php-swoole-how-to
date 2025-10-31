@@ -2,7 +2,7 @@
 
 namespace App\Application\Middlewares;
 
-use App\Services\JwToken;
+use App\Services\JwtToken;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
@@ -14,7 +14,7 @@ class JwtAuthMiddleWare
 {
 
     public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        $auth = JwToken::getToken($request);
+        $auth = JwtToken::getToken($request);
 
         if(empty($auth)) {
             $factory = new Psr17Factory();

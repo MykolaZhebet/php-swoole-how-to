@@ -5,7 +5,7 @@ namespace App\Commands;
 use App\Application\Rules\RecordExist;
 use App\Models\Token;
 use App\Models\User;
-use App\Services\JwToken;
+use App\Services\JwtToken;
 use App\Services\Validator;
 use Carbon\Carbon;
 use Firebase\JWT\JWT;
@@ -33,6 +33,7 @@ class GenerateJwtToken extends Command
                     new InputOption('name', null, InputOption::VALUE_REQUIRED, 'The name of JWT token'),
                     new InputOption('email', null, InputOption::VALUE_REQUIRED, 'The email of the user that JWT token is for'),
                     new InputOption('expire', null, InputOption::VALUE_OPTIONAL, 'The number of seconds until the token expiration.'),
+                    new InputOption('useLimit', null, InputOption::VALUE_OPTIONAL, 'The number of times this token can be used.'),
                 ])
 
             )
@@ -54,32 +55,18 @@ class GenerateJwtToken extends Command
     }
 
     private function generateToken(InputInterface $input, SymfonyStyle $io) {
-        [$name, $userEmail, $expire] = $this->validateInput($input, $io);
+        [$name, $userEmail, $expire, $useLimit] = $this->validateInput($input, $io);
         $user = User::where('email', $userEmail)->first();
 
-        //@see https://datatracker.ietf.org/doc/html/rfc7519
-        $payload = [
-            'iat' => Carbon::now()->timestamp, //Issued At
-            'user_id' => $user->id,
-        ];
-
-        if($expire) {
-            $expire = Carbon::now()->addSeconds($expire);
-            $payload['exp'] =  $expire->timestamp; //Expiration Time
-        }
-
-
-        $token = JWT::encode($payload, $name, JwToken::HS256_ALGORITHM);
-
-        $tokenRecord = Token::create([
-            'name' => $name,
-            'user_id' => $user->id,
-            'expire_at' => $expire ? $expire->format('Y-m-d H:i:s'): null,
-            'token' => $token,
-        ]);
+        $tokenRecord = JwtToken::create(
+            $name,
+            $user->id,
+            $expire,
+            $useLimit,
+        );
 
         if(!$input->getOption('quiet')) {
-            $io->success('Token generated successfully: ' . $token);
+            $io->success('Token generated successfully: ' . $tokenRecord);
         }
     }
 
@@ -87,11 +74,13 @@ class GenerateJwtToken extends Command
         $name = $input->getOption('name');
         $userEmail = $input->getOption('email');
         $expire = $input->getOption('expire');
+        $useLimit = $input->getOption('useLimit');
         /** @Throws \Exception */
         Validator::validate([
             'name' => $name,
             'userEmail' => $userEmail,
             'expire' => $expire,
+            'useLimit' => $useLimit,
         ], [
             'name' => [
                 new NotBlank(null, 'Token name is required'),
@@ -108,10 +97,13 @@ class GenerateJwtToken extends Command
             ],
             'expire' => [
                 new Type('integer', 'Expire must be an inteber')
+            ],
+            'useLimit' => [
+                new Type('integer', 'UseLimit must be an inteber')
             ]
         ]);
 
-        return [$name, $userEmail, $expire];
+        return [$name, $userEmail, $expire, $useLimit];
     }
 
 }

@@ -63,14 +63,17 @@ class App  {
         $application = new Application();
         $httpServerCommand = new HttpServerCommand();
         $application->add($httpServerCommand);
+        $WSServerCommand = new WSServerCommand();
+        $application->add($WSServerCommand);
 
-        $application->add(new WSServerCommand());
         $application->add(new GenerateJwtToken());
         $application->add(new MigrateCommand());
         $application->add(new GenerateFactoryCommand());
 
         if (!isset($_SERVER['argv'][1])) {
-            $application->setDefaultCommand($httpServerCommand->getName(), true);
+//            $application->setDefaultCommand($httpServerCommand->getName(), true);
+            $app->getContainer()->get('logger')->info('No command provided, defaulting to WS server');
+            $application->setDefaultCommand($WSServerCommand->getName(), true);
         }
 
         $application->run();
@@ -114,7 +117,7 @@ class App  {
             $logger = $container->get('logger');
             /** @var EventLogin $event */
 //            $user = User::find((int)$parsedData['user_id']);
-            $logger->info('User ' . $event->user->name . ' logged in');
+//            $logger->info('User ' . $event->user->name . ' logged in');
         });
     }
 

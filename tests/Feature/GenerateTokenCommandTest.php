@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use App\Models\User;
 use Nekofar\Slim\Test\Traits\AppTestTrait;
@@ -34,6 +34,37 @@ class GenerateTokenCommandTest extends TestCase
             $tester->getDisplay(),
             'Wrong output for generate token command with all options'
         );
+    }
+
+    public function test_can_generate_token_with_use_limit() {
+        $user = User::find(1);
+
+        $tester = $this->generateToken([
+            '--name' => 'token-name',
+            '--email' => $user->email,
+            '--useLimit' => 1,
+            '--quiet' => null,
+        ]);
+        $user->refresh();
+        $token = $user->tokens->first()->token;
+
+        $tester->assertCommandIsSuccessful();
+        $this->assertStringContainsString(
+            'Token generated successfully',
+            $tester->getDisplay(),
+            'Wrong output for generate token command with all options'
+        );
+
+        $response = $this
+            ->withHeader('Authorization', 'Bearer ' . $token)
+            ->get('/api/users');
+        $response->assertOk();
+
+        $response2 = $this
+            ->withHeader('Authorization', 'Bearer ' . $token)
+            ->get('/api/users');
+        $response->assertStatus(401);
+
     }
 
     public function test_can_generate_token_without_name() {

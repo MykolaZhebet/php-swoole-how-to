@@ -1,3 +1,9 @@
+<?php
+$this->layout('templates/AdminLayout', [
+        'page' => 'Admin Home',
+        'ws_context'=> $ws_context,
+])
+?>
 <html>
 <head>Admin page</head>
 <body>

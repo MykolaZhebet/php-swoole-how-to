@@ -34,13 +34,11 @@ class HttpServerCommand extends Command
 
         $serverHost = (string)$_SERVER['SWOOLE_SERVER_HOST'] ?: '0.0.0.0';
         $serverPort = (int)$_SERVER['SWOOLE_SERVER_PORT'] ?: 8003;
-        $serverProtocol = (string)$_SERVER['SWOOLE_SERVER_PROTOCOL'] ?: 'http';
 
         $server = new Server($serverHost, $serverPort);
-        $server->on('start', function (Server $server) use ($serverProtocol, $serverHost, $serverPort, $io) {
+        $server->on('start', function (Server $server) use ($serverHost, $serverPort, $io) {
             $io->success(sprintf(
-                "swoole http server is started at %s://%s:%d",
-                $serverProtocol,
+                "swoole http server is started at %s:%d",
                 $serverHost,
                 $serverPort
             ));
@@ -52,6 +50,12 @@ class HttpServerCommand extends Command
             $converter = new SwooleResponseConverter($response);
             $converter->send($psr7Response);
         });
+
+        $server->set([
+            'document_root' => ROOT_DIR . '/public',
+            'enable_static_handler' => true,
+            'static_handler_locations' => ['/js'],
+        ]);
 
         $server->start();
     }
