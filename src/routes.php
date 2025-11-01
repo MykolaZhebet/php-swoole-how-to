@@ -25,5 +25,8 @@ return function (App $app) {
         $group->get('/admin', AdminController::class . ':admin' )
             ->setName('admin')
             ->add(new AuthorizationMiddleWare());
+        $group->get('/adminConveyor', AdminController::class . ':adminConveyor' )
+            ->setName('admin')
+            ->add(new AuthorizationMiddleWare());
     })->add(new SessionMiddleware());
 };

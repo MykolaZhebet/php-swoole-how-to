@@ -18,6 +18,12 @@ docker-compose exec app  ./vendor/bin/phpunit
 #concrete test
 docker-compose exec app  ./vendor/bin/phpunit ./tests/Unit/GenerateTokenCommandTest.php
 ```
+Build frontend:
+``` 
+npm install
+npx mix build
+
+```
 DB:
 ```
 docker compose exec -ti db bash
@@ -46,6 +52,10 @@ Components:
  - mustache/mustache for templating files
  - fakerphp/faker for generating dummy data
  - symfony/password-hasher for password hashing
+ - kanata-php/socket-conveyor for handling websockets
+### Frontend:
+- laravel-mix for compiling assets in laravel
+- socket-conveyor-client for client communication through websockets
 
 
 ##Troubleshoot WS:

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1bfdcf042ec35a9b9efc3139173ec9dd",
+    "content-hash": "12207c4b276a2d0a30ee247609b811b2",
     "packages": [
         {
             "name": "brick/math",
@@ -885,6 +885,61 @@
             "time": "2025-10-21T17:38:47+00:00"
         },
         {
+            "name": "kanata-php/socket-conveyor",
+            "version": "1.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kanata-php/socket-conveyor.git",
+                "reference": "7f690a1b656e5dec2952fffb47092e4733933e07"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kanata-php/socket-conveyor/zipball/7f690a1b656e5dec2952fffb47092e4733933e07",
+                "reference": "7f690a1b656e5dec2952fffb47092e4733933e07",
+                "shasum": ""
+            },
+            "require": {
+                "league/pipeline": "^1.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "codedungeon/phpunit-result-printer": "^0.30.0",
+                "mockery/mockery": "^1.4",
+                "openswoole/ide-helper": "^22.0",
+                "phpunit/phpunit": "^9.2",
+                "symfony/var-dumper": "^6.1"
+            },
+            "suggest": {
+                "ext-openswoole": "This package requires at least one of Open Swoole or Swoole"
+            },
+            "bin": [
+                "start-ws-server"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Tests\\": "tests",
+                    "Conveyor\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A WebSocket/Socket message Router",
+            "support": {
+                "issues": "https://github.com/kanata-php/socket-conveyor/issues",
+                "source": "https://github.com/kanata-php/socket-conveyor/tree/1.3.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/kanata-php",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-08-26T23:30:27+00:00"
+        },
+        {
             "name": "laravel/serializable-closure",
             "version": "v2.0.6",
             "source": {
@@ -1132,6 +1187,62 @@
                 }
             ],
             "time": "2024-09-21T08:32:55+00:00"
+        },
+        {
+            "name": "league/pipeline",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/pipeline.git",
+                "reference": "9069ddfdbd5582f8a563e00cffdbeffb9a0acd01"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/pipeline/zipball/9069ddfdbd5582f8a563e00cffdbeffb9a0acd01",
+                "reference": "9069ddfdbd5582f8a563e00cffdbeffb9a0acd01",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.0 || ^10.0 || ^11.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "League\\Pipeline\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frenky.net",
+                    "role": "Author"
+                },
+                {
+                    "name": "Woody Gilk",
+                    "email": "woody.gilk@gmail.com",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "A plug and play pipeline implementation.",
+            "keywords": [
+                "composition",
+                "design pattern",
+                "pattern",
+                "pipeline",
+                "sequential"
+            ],
+            "support": {
+                "issues": "https://github.com/thephpleague/pipeline/issues",
+                "source": "https://github.com/thephpleague/pipeline/tree/1.1.0"
+            },
+            "time": "2025-02-06T08:48:15+00:00"
         },
         {
             "name": "league/plates",

@@ -42,7 +42,7 @@
         },
 
         listenEvents: function() {
-            document.getElementById('message-form').addEventListener('submit', app.handleSubmit, false)
+            document.getElementById('message-form-simple').addEventListener('submit', app.handleSubmit, false)
         },
 
         handleSubmit: function(e) {
@@ -51,6 +51,7 @@
         },
 
         handleMessage: function(data) {
+            console.log('messageHandler start', data);
             let parsedData = JSON.parse(data);
             app.addInputMessage(parsedData);
 
@@ -62,7 +63,7 @@
             let message = document.createElement('span');
             user.innerText = parsedData.user + ': ';
             message.innerText = parsedData.message;
-            // input.innerHTML = data;
+            // input.innerHTML = data; 
             input.append(user, message);
             document.getElementById('output').appendChild(input);
         }
