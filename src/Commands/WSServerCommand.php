@@ -39,6 +39,7 @@ class WSServerCommand extends Command
             ->setDefinition([
                 new InputOption('port', null, InputOption::VALUE_OPTIONAL, 'The port to run the server on', 8004),
                 new InputOption('http', null, InputOption::VALUE_OPTIONAL, 'Run the WS server in HTTP mode also', true),
+                new InputOption('enableSSL', null, InputOption::VALUE_OPTIONAL, 'Enable SSL', true),
             ])
             ->setHelp(self::$defaultDescription);
     }
@@ -47,12 +48,13 @@ class WSServerCommand extends Command
         $this->io = new SymfonyStyle($input, $output);
         $this->start(
             $input->getOption('port'),
-            $input->getOption('http')
+            $input->getOption('http'),
+            $input->getOption('enableSSL')
         );
         return Command::SUCCESS;
     }
 
-    protected function start(int $port, bool $http) {
+    protected function start(int $port, bool $http, bool $enableSSL) {
         global $app, $requestConverter;
         $this->startUserTable();
         $app->getContainer()->set('ws-context', [
@@ -68,7 +70,16 @@ class WSServerCommand extends Command
             new SocketListenerPersistenceTable(),
         ];
 
-        $server = new Server( $wsServerHost, $wsServerPort);
+        if($enableSSL) {
+            $server = new \Swoole\Http\Server(
+                $wsServerHost,
+                443,
+                \OpenSwoole\Server::POOL_MODE, SWOOLE_SOCK_TCP | SWOOLE_SSL,
+            );
+        } else {
+            $server = new Server($wsServerHost, $wsServerPort);
+        }
+
         $server->on('start', function (Server $server) use ($wsServerHost, $wsServerPort, $http) {
             $this->io->success(
                 sprintf('Swoole WebSocket Server is started at ws://%s:%d', $wsServerHost, $wsServerPort)
@@ -160,11 +171,25 @@ class WSServerCommand extends Command
                 $converter->send($psr7Response);
             });
         }
-        $server->set([
+
+        $serverParams = [
             'document_root' => ROOT_DIR . '/public',
             'enable_static_handler' => true,
             'static_handler_locations' => ['/js'],
-        ]);
+        ];
+
+        if($enableSSL) {
+            $sslServerParams = [
+                'ssl_cert_file' => ROOT_DIR . '/ssl/certificate.pem',
+                'ssl_key_file' => ROOT_DIR . '/ssl/private_key.pem',
+                'ssl_allow_self_signed' => true,
+                'ssl_verify_peer' => false,
+                'open_http_protocol' => true,
+            ];
+            $serverParams = array_merge($serverParams, $sslServerParams);
+        }
+
+        $server->set($serverParams);
         $server->start();
 
     }

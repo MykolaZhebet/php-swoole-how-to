@@ -5,10 +5,10 @@ services:
     build:
       context: ./
       dockerfile: docker/swoole/Dockerfile
-    image: openswoole/swoole:25.2-php8.4
     ports:
       - "8003:8003"
       - "8004:8004"
+      - "443:443"
     volumes:
       - .:/var/www/
     depends_on:

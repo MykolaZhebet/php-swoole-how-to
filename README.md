@@ -53,6 +53,7 @@ Components:
  - fakerphp/faker for generating dummy data
  - symfony/password-hasher for password hashing
  - kanata-php/socket-conveyor for handling websockets
+ - kanata-php/conveyor-server-client for implementing WS client on BE also
 ### Frontend:
 - laravel-mix for compiling assets in laravel
 - socket-conveyor-client for client communication through websockets
@@ -64,6 +65,25 @@ sudo lsof -i :8004
 sudo netstat -tlnp | grep 8004
 wscat -c ws://localhost:8004
 ```
+
+##Generate self-signed SSL certificate
+```
+openssl genpkey  -algorithm RSA --out private_key.pem
+##Certificate signing request
+openssl req -new -key private_key.pem -out request.csr
+##Generate certificate signed
+openssl x509 -req -days 365 -in request.csr -signkey private_key.pem -out certificate.pem
+
+sudo chmod 600 private_key.pem
+sudo chmod 644 certificate.pem
+## Or with mkcert
+mkcert -key-file private_key.pem -cert-file certificate.pem yuor-local-domain.com
+
+```
+local-test-openswoole-mkcert.com
+https://local-test-openswoole.com
+
+
 TODOS:
  - db managements(dbal query builder/migrations)
  - console commands(symfony console?)
